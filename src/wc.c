@@ -1,9 +1,16 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #define MAX_FILES 1024
 #define MAX_LENGTH 1024
+
+#define NEWLINES 0
+#define WORDS 1
+#define CHARS 2
+#define BYTES 3
+#define MAX_LINE_LENGTH 4
 
 #define HELP_MENU \
 	"Usage: wc [OPTION]... [FILE]...\n" \
@@ -39,18 +46,22 @@
 	"There is NO WARRANTY, to the extent permitted by law.\n" /* "\n" \
 	"Written by Paul Rubin and David MacKenzie." */
 
-int main(int argc, char **argv) {
+#define ERROR_TEXT "Try 'wc --help' for more information."
+
+void get(FILE *path, int info[][5], int n);
+
+int main(const int argc, char **argv) {
 	char file_paths[MAX_FILES][MAX_LENGTH];
+	int info[MAX_FILES][5];
+	int standard = 1;
 	int files = 0;
-	int total[5] = {0, 0, 0, 0, 0};
-	int bytes = 0;
-	int chars = 0;
-	int lines = 0;
-	int max_line_length = 0;
-	int words = 0;
+
+	info[0][CHARS] = -1;
+	info[0][MAX_LINE_LENGTH] = -1;
 
 	for (int i = 1; i < argc; i++) {
 		const char *arg = argv[i];
+		int value = -1;
 
 		if (strcmp(arg, "--help") == 0) {
 			printf(HELP_MENU);
@@ -60,51 +71,122 @@ int main(int argc, char **argv) {
 			printf(VERSION_MENU);
 			return 0;
 		}
-		if (strcmp(arg, "-c") == 0 || strcmp(arg, "--bytes") == 0) {
-			bytes = 1;
+		if (strncmp(arg, "-", 1) == 0) {
+			if (strcmp(arg, "-c") == 0 || strcmp(arg, "--bytes") == 0) {
+				value = BYTES;
+			}
+			else if (strcmp(arg, "-m") == 0 || strcmp(arg, "--chars") == 0) {
+				value = CHARS;
+			}
+			else if (strcmp(arg, "-l") == 0 || strcmp(arg, "--lines") == 0) {
+				value = NEWLINES;
+			}
+			else if (strcmp(arg, "-L") == 0 || strcmp(arg, "--max-line-length") == 0) {
+				value = MAX_LINE_LENGTH;
+			}
+			else if (strcmp(arg, "-w") == 0 || strcmp(arg, "--words") == 0) {
+				value = WORDS;
+			}
+			else if (strncmp(arg, "--files0-from", 13) == 0) {
+				// TODO: implement
+				continue;
+			}
+
+			if (value == -1) {
+				printf("my_wc: unrecognized option '%s'\nTry 'my_wc --help' for more information.\n", arg);
+				return 0;
+			}
+
+			if (standard == 1) {
+				info[0][NEWLINES] = -1;
+				info[0][WORDS] = -1;
+				info[0][BYTES] = -1;
+				standard = 0;
+			}
+
+			info[0][value] = 0;
+			continue;
 		}
-		else if (strcmp(arg, "-m") == 0 || strcmp(arg, "--chars") == 0) {
-			chars = 1;
+
+		files++;
+		strcpy(file_paths[files], arg);
+	}
+
+	for (int i = 1; i <= files; i++) {
+		const char *path = file_paths[i];
+		FILE *file = fopen(path, "r");
+
+		if (file == NULL) {
+			info[i][0] = -1;
+			continue;
 		}
-		else if (strcmp(arg, "-l") == 0 || strcmp(arg, "--lines") == 0) {
-			lines = 1;
-		}
-		else if (strcmp(arg, "-L") == 0 || strcmp(arg, "--max-line-length") == 0) {
-			max_line_length = 1;
-		}
-		else if (strcmp(arg, "-w") == 0 || strcmp(arg, "--words") == 0) {
-			words = 1;
-		}
-		else if (strncmp(arg, "--files0-from", 13) == 0) {
-			// strcpy(file_paths[files], "bozo"); // fix
-			// files++;
-		}
-		else {
-			// strcpy(file_paths[files], arg);
-			// files++;
-		}
+
+		get(file, info, i);
+
+		fclose(file);
 	}
 
 	if (files == 0) {
-		char buffer[MAX_LENGTH];
-		fgets(buffer, MAX_LENGTH, stdin);
-		printf("TODO: STDIN File Info\n");
+		get(stdin, info, 1);
+		files = 1;
 	}
 
-	for (int i = 0; i < files; i++) {
-		char *path = file_paths[i];
-		FILE *file = fopen(path, "r");
-		if (file == NULL) {
-			printf("my_wc: %s: No such file or directory\n", path);
-			fclose(file);
+	// TODO: fix alignment
+	for (int i = 1; i <= files; i++) {
+		if (info[i][0] < 0) {
+			printf("my_wc: %s: No such file or directory\n", file_paths[i]);
 			continue;
 		}
-		printf("TODO: PATH File Info\n");
+
+		for (int j = 0; j < 5; j++) {
+			if (info[0][j] >= 0) {
+				info[0][j] += info[i][j];
+				printf(" %d", info[i][j]);
+			}
+		}
+
+		printf(" %s\n", file_paths[i]);
 	}
 
 	if (files > 1) {
-		printf("TODO: Total\n");
+		for (int i = 0; i < 5; i++) {
+			if (info[0][i] >= 0) {
+				printf(" %d", info[0][i]);
+			}
+		}
+		printf(" total\n");
 	}
 
 	return 0;
+}
+
+// TODO: fix output
+void get(FILE *path, int info[][5], const int n) {
+	char c;
+	int line_length = 0;
+	int word_length = 0;
+	while ((c = (char) getc(path)) != EOF) {
+		info[n][CHARS] += 1;
+		info[n][BYTES] += 1;
+
+		if (!isspace(c)) {
+			line_length += 1;
+			word_length += 1;
+		}
+
+		if (c == '\n') {
+			if (info[n][MAX_LINE_LENGTH] < line_length) {
+				info[n][MAX_LINE_LENGTH] = line_length;
+			}
+
+			info[n][NEWLINES] += 1;
+			line_length = 0;
+		}
+
+		if (word_length > 0) {
+			info[n][WORDS] += 1;
+		}
+
+		word_length = 0;
+	}
 }
