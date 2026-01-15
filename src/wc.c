@@ -198,7 +198,6 @@ int parse_option_long(const char *s) {
 }
 
 int parse_option_short(const char *s) {
-
 	while (strlen(s) > 0) {
 		if (strncmp(s, "c", 1) == 0) {
 			enable_option(BYTES);
