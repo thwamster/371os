@@ -45,7 +45,7 @@
 	"GNU coreutils online help: <https://www.gnu.org/software/coreutils/>\n" \
 	"Report any translation bugs to <https://translationproject.org/team/>\n" \
 	"Full documentation <https://www.gnu.org/software/coreutils/wc>\n" \
-	"or available locally via: info '(coreutils) wc invocation'"
+	"or available locally via: info '(coreutils) wc invocation'\n"
 
 #define VERSION_MENU \
 	"wc (GNU coreutils) 9.9\n" \
