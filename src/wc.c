@@ -44,28 +44,6 @@ void input() {
 }
 
 void output() {
-	for (int j = 0; j < 5; j++) {
-		if (file_data[0][j] < 0) {
-			continue;
-		}
-
-		int width = 0;
-
-		for (int i = 0; i <= file_count; i++) {
-			const int value = file_data[i][j];
-
-			if (value > 0) {
-				const int new_width = (int) floor(log10(abs(value))) + 1;
-
-				if (width < new_width) {
-					width = new_width;
-				}
-			}
-		}
-
-		file_data[file_count + 1][j] = width;
-	}
-
 	for (int i = 1; i <= file_count; i++) {
 		const char *path = file_paths[i];
 
@@ -248,7 +226,7 @@ void analyze_file(FILE *f, const int n) {
 			line_length += 8 - (line_length % 8);
 		}
 		else if (c == '\n') {
-			line_length = line_length > 0 ? line_length - 1 : 0;
+			line_length = line_length > 0 ? line_length : 0;
 			if (file_data[n][MAX_LINE_LENGTH] < line_length) {
 				file_data[n][MAX_LINE_LENGTH] = line_length;
 			}
@@ -274,19 +252,26 @@ void analyze_file(FILE *f, const int n) {
 		file_data[n][WORDS] += 1;
 	}
 
-	line_length = line_length > 0 ? line_length - 1 : 0;
+	for (int i = 0; i < 4; i++) {
+		if (file_data[0][i] >= 0) {
+			file_data[0][i] += file_data[n][i];
+			if (file_data[0][i] > 0) {
+				file_data[file_count + 1][i] = (int) floor(log10(abs(file_data[0][i]))) + 1;
+			}
+		}
+	}
+
+	line_length = line_length > 0 ? line_length : 0;
 	if (file_data[n][MAX_LINE_LENGTH] < line_length) {
 		file_data[n][MAX_LINE_LENGTH] = line_length;
 	}
 
-	for (int i = 0; i < 4; i++) {
-		if (file_data[0][i] >= 0) {
-			file_data[0][i] += file_data[n][i];
-		}
-	}
-
 	if (file_data[0][MAX_LINE_LENGTH] >= 0 && file_data[0][MAX_LINE_LENGTH] < file_data[n][MAX_LINE_LENGTH]) {
 		file_data[0][MAX_LINE_LENGTH] = file_data[n][MAX_LINE_LENGTH];
+	}
+
+	if (file_data[0][MAX_LINE_LENGTH] > 0) {
+		file_data[file_count + 1][MAX_LINE_LENGTH] = (int) floor(log10(abs(file_data[0][MAX_LINE_LENGTH]))) + 1;
 	}
 }
 
