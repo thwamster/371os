@@ -61,7 +61,7 @@ int file_count = 0;
 int enable_standard = 1;
 int enable_files0 = -1;
 
-int main(const int argc, char **argv);
+int main(int argc, char **argv);
 void input();
 void output();
 int parse_file(const char *s);
