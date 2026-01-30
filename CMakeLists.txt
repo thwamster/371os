@@ -5,3 +5,4 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -lm")
 
 add_executable(my_wc src/wc.c src/wc.h)
 add_executable(hello_world src/hello_world.c src/hello_world.h)
+add_executable(my_malloc src/malloc.c src/malloc.h)
