@@ -1,0 +1,6 @@
+[submodule "rs/rs/32"]
+	path = rs/rs/32
+	url = https://github.com/cd-rs/hwr5
+[submodule "rs/32"]
+	path = rs/32
+	url = https://github.com/cd-rs/hwr5

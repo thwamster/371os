@@ -4,6 +4,8 @@ Repository for CS 371: Advanced Systems Computing in spring 2026 at Willamette U
 
 ## Build Instructions
 
+### C Binaries
+
 Requires CMake. On UNIX architecture:
 
 ```console
@@ -24,3 +26,16 @@ cd Debug
 ```
 
 Substitute your preferred generator and adjust accordingly.
+
+### Rust Binaries
+
+#### 32 [osirs]
+
+Requires Qemu, particularly `qemu-system-misc`.
+
+```console
+rustc -C link-args=-Tmemory.x -C link-args=-Tlink.x -C panic=abort --target riscv64imac-unknown-none-elf src/main.rs
+qemu-system-riscv64 -kernel main -bios none -machine virt -nographic
+```
+
+`Ctrl` + `A` then `H` for help.
