@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["11", "12", "20", "21", "22", "32"]
+members = ["11", "12", "20", "21", "22", "32", "42"]
 
 [profile.dev]
 panic = "abort"
