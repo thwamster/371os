@@ -4,38 +4,43 @@ Repository for CS 371: Advanced Systems Computing in spring 2026 at Willamette U
 
 ## Build Instructions
 
-### C Binaries
+This repository includes both a CMake workspace in C and a Cargo workspace in Rust at the root directory. Both
+workspaces
+use the `/build` directory.
 
-Requires CMake. On UNIX architecture:
+### CMake
+
+To build with CMake:
 
 ```console
 mkdir build
 cd build
-cmake -G "Unix Makefiles" ..
+cmake ..
+make run_<PROJECT_NUMBER>
+```
+
+Some of the CMake host projects require command line arguments which are currently not supported. To run these:
+
+```
+mkdir build
+cd build
+cmake ..
 make
+cd host/<PROJECT_NUMBER>
+./<PROJECT_NAME
 ```
 
-On Windows:
+### Cargo
 
-```console
-mkdir build
-cd build
-cmake -G "Visual Studio 18 2026" -A x64 ..
-cmake --build .
-cd Debug
+To build with Cargo:
+
+```
+cargo run --bin <PROJECT_NAME>
 ```
 
-Substitute your preferred generator and adjust accordingly.
+Some of the Cargo projects require building inside of their directory. If the above throws an error:
 
-### Rust Binaries
-
-#### 32 [osirs]
-
-Requires Qemu, particularly `qemu-system-misc`.
-
-```console
-rustc -C link-args=-Tmemory.x -C link-args=-Tlink.x -C panic=abort --target riscv64imac-unknown-none-elf src/main.rs
-qemu-system-riscv64 -kernel main -bios none -machine virt -nographic
 ```
-
-`Ctrl` + `A` then `H` for help.
+cd rs/<PROJECT_NUMBER>
+cargo run
+```

@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 4.0)
+project(my_wc LANGUAGES C)
+file(GLOB sources src/*)
+add_executable(my_wc ${sources})
+target_link_libraries(my_wc m)

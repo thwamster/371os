@@ -1,4 +1,4 @@
-#include "wc.h"
+#include "main.h"
 
 int main(const int argc, char **argv) {
 	file_data[0][CHARS] = -1;

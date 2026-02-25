@@ -5,9 +5,9 @@
 
 const HEIGHT : usize = 25;
 const WIDTH : usize = 80;
-const BACKGROUND : u16 = 0x10;
-const BRIGHT : u16 = 0x800;
-const BLINK : u16 = 0x8000;
+const BACKGROUND : u16 = 0b1 << 12;
+const BRIGHT : u16 = 0b1 << 11;
+const BLINK : u16 = 0b1 << 15;
 
 #[repr(u16)]
 enum Color {
@@ -48,7 +48,7 @@ fn hello() {
 
 	for i in 0..s.len() {
 		unsafe {
-			(*buffer)[0][i] = s[i] as u16 + c[i] //  + (BACKGROUND * Color::BLACK as u16);
+			(*buffer)[0][i] = (s[i] as u16) + c[i] + (BACKGROUND * Color::BLACK as u16);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-#include "malloc.h"
+#include "main.h"
 
 int main() {
 	const size_t p0 = my_malloc(16);
