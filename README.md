@@ -21,7 +21,7 @@ make run_<PROJECT_NUMBER>
 
 Some of the CMake host projects require command line arguments which are currently not supported. To run these:
 
-```
+```console
 mkdir build
 cd build
 cmake ..
@@ -34,13 +34,13 @@ cd host/<PROJECT_NUMBER>
 
 To build with Cargo:
 
-```
+```console
 cargo run --bin <PROJECT_NAME>
 ```
 
 Some of the Cargo projects require building inside of their directory. If the above throws an error:
 
-```
+```console
 cd rs/<PROJECT_NUMBER>
 cargo run
 ```
