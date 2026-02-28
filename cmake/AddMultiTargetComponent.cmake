@@ -24,7 +24,7 @@ function(add_multi_target_component srcRelPrefix project toolchainTuple generato
     if (${toolchainTuple} MATCHES "riscv")
         add_custom_target(run_${project}
                 DEPENDS ${projectToolchainTuple}
-                COMMAND qemu-system-riscv64 -machine virt -bios none -kernel ${outputDir}/kernel.elf -serial mon:stdio
+                COMMAND qemu-system-riscv64 -machine virt -bios none -serial mon:stdio -nographic -kernel ${outputDir}/kernel.elf
                 WORKING_DIRECTORY ${outputDir}
         )
     else ()

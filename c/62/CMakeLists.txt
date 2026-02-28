@@ -9,7 +9,9 @@ file(GLOB SOURCES
         src/entry.S
 )
 
-add_executable(${KERNEL_ELF} ${SOURCES})
+add_executable(${KERNEL_ELF} ${SOURCES}
+        src/library.c
+        src/library.h)
 
 target_compile_options(${KERNEL_ELF} PRIVATE
         -Wall
@@ -25,13 +27,4 @@ target_link_options(${KERNEL_ELF} PRIVATE
 
 set_target_properties(${KERNEL_ELF} PROPERTIES
         LINK_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/linker.ld
-)
-
-add_custom_target(run
-        COMMAND qemu-system-riscv64
-        -machine virt
-        -bios none
-        -kernel ${KERNEL_ELF}
-        -serial mon:stdio
-        DEPENDS ${KERNEL_ELF}
 )
