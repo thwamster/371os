@@ -1,3 +1,5 @@
+use crate::img::IMAGE;
+
 static mut INDEX : (usize, usize) = (0, 0);
 
 const MMIO : *mut [[u16; WIDTH]; HEIGHT] = 0xB8000 as *mut [[u16; WIDTH]; HEIGHT];
@@ -28,11 +30,6 @@ enum Color {
 	WHITE = 0xF
 }
 
-macro_rules! print {
-    () => { ... };
-    ($($arg:tt)*) => { ... };
-}
-
 pub fn print_str(string : &str) {
 	let characters : &[u8] = string.as_bytes();
 
@@ -47,11 +44,36 @@ fn print_char(character : u16, foreground : Color, background : Color, blink : b
 			+ FOREGROUND * foreground as u16
 			+ BACKGROUND * background as u16
 			+ BLINK * blink as u16;
+
 		INDEX.1 += 1;
 
 		if INDEX.1 > WIDTH {
 			INDEX.1 = 0;
 			INDEX.0 += 1;
 		}
+	}
+}
+
+pub fn map_colors() {
+	for r in 0..WIDTH {
+		for c in 0..HEIGHT {
+			map_pixel(r, c, (c / 5) as u16);
+		}
+	}
+}
+
+pub fn map_image() {
+	for r in 0..WIDTH {
+		for c in 0..HEIGHT {
+			unsafe {
+				map_pixel(r, c, IMAGE[c * WIDTH + r]);
+			}
+		}
+	}
+}
+
+fn map_pixel(r : usize, c : usize, color : u16) {
+	unsafe {
+		(*MMIO)[c][r] = color << 8;
 	}
 }

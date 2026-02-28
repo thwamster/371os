@@ -3,11 +3,12 @@
 #![allow(unconditional_recursion)]
 #![cfg(not(test))]
 
+mod img;
 mod vga;
 
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
-	vga::print_str("Hello, World!");
+	vga::map_image();
 	loop {}
 }
 
