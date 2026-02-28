@@ -3,7 +3,7 @@
 #![allow(unconditional_recursion)]
 #![cfg(not(test))]
 
-mod img;
+mod image;
 mod vga;
 
 #[unsafe(no_mangle)]
