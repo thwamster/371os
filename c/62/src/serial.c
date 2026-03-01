@@ -1,44 +1,7 @@
 #include "serial.h"
 #include "library.h"
-#include "literals.h"
 
-void terminal() {
-	char buffer[MAX_INPUT];
-
-	while (true) {
-		memset(buffer, '\0', sizeof buffer);
-		format_reset();
-
-		print_reset("[");
-		format(FAINT);
-		print_reset(PROMPT_USER);
-		print_reset(".");
-		format(FAINT);
-		print_reset(PROMPT_SYSTEM);
-		print_reset("] > ");
-
-		read_line(buffer);
-		command(buffer);
-	}
-}
-
-void command(const char *input) {
-	if (strcmp(input, "") == 0) { execute(EMPTY, 0, (int[]) {0}); }
-	else if (strcmp(input, COMMAND_EXIT) == 0) { execute(EXIT, 0, (int[]) {0}); }
-	else if (strcmp(input, COMMAND_HELP) == 0) { execute(HELP, 0, (int[]) {0}); }
-	else { execute(UNKNOWN, 0, (int[]) {0}); }
-}
-
-void execute(const int command, const int arguments_count, const int arguments[]) {
-	switch (command) {
-		case EMPTY: break;
-		case EXIT: exit(0); break;
-		case HELP: print_line(MESSAGE_COMMAND_HELP); break;
-		default: print_line(MESSAGE_COMMAND_UNKNOWN); break;
-	}
-}
-
-void read_line(char *buffer) {
+void read_line(char * buffer) {
 	size_t max = 0;
 	size_t now = 0;
 
@@ -116,28 +79,28 @@ char read_char() {
 	return (char) *UART;
 }
 
-void print_line(const char *string) {
-	print(string);
-	print("\r\n");
-}
-
-void print(const char *string) {
+void print(const char * string) {
 	while (*string != '\0') {
 		print_char(*string);
 		string++;
 	}
 }
 
-void print_reset(const char *string) {
+void print_reset(const char * string) {
 	print(string);
 	format_reset();
+}
+
+void print_line(const char * string) {
+	print(string);
+	print("\r\n");
 }
 
 void print_char(const char character) { *UART = character; }
 
 void print_int(const int number, const int base) {
 	char buffer[MAX_INPUT];
-	char *string = &buffer[sizeof buffer - 1];
+	char * string = &buffer[sizeof buffer - 1];
 
 	if (base < 2 || base > 16) { return; }
 
@@ -157,13 +120,13 @@ void print_int(const int number, const int base) {
 	print(string);
 }
 
-void format_reset() { format(RESET); }
-
 void format(const uint8_t code) {
 	print("\e[");
 	print_int(code, 10);
 	print("m");
 }
+
+void format_reset() { format(RESET); }
 
 void format_rgb(const uint8_t code, const uint8_t red, const uint8_t green, const uint8_t blue) {
 	print("\e[");
@@ -177,7 +140,13 @@ void format_rgb(const uint8_t code, const uint8_t red, const uint8_t green, cons
 	print("m");
 }
 
-void cursor_visibility(bool visible) { print(visible ? "\x1b[?25h" : "\x1b[?25l"); }
+void format_clear() {
+	cursor_visibility(false);
+	print("\e[2J\e[H");
+	cursor_visibility(true);
+}
+
+void cursor_visibility(const bool visible) { print(visible ? "\x1b[?25h" : "\x1b[?25l"); }
 
 void cursor_move(const char direction, const uint8_t number) {
 	print("\e[");

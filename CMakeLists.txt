@@ -7,6 +7,11 @@ project(371os LANGUAGES C ASM)
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 include(AddMultiTargetComponent)
 
+add_subdirectory(c/01)
+add_subdirectory(c/21)
+add_subdirectory(c/22)
+add_subdirectory(c/62)
+
 add_multi_target_component(c 01 host Ninja my_wc)
 add_multi_target_component(c 21 host Ninja my_malloc)
 add_multi_target_component(c 22 host Ninja hello_world)

@@ -1,4 +1,4 @@
 #include "main.h"
-#include "serial.h"
+#include "terminal.h"
 
 int main() { terminal(); }

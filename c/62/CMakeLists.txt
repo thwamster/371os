@@ -6,12 +6,10 @@ set(KERNEL_ELF kernel.elf)
 file(GLOB SOURCES
         src/*.c
         src/*.h
-        src/entry.S
+        src/*.S
 )
 
-add_executable(${KERNEL_ELF} ${SOURCES}
-        src/library.c
-        src/library.h)
+add_executable(${KERNEL_ELF} ${SOURCES})
 
 target_compile_options(${KERNEL_ELF} PRIVATE
         -Wall
