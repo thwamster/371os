@@ -4,11 +4,11 @@ Repository for CS 371: Advanced Systems Computing in spring 2026 at Willamette U
 
 ## Build Instructions
 
-This repository includes both a CMake workspace in C and a Cargo workspace in Rust at the root directory. Both
-workspaces
-use the `/build` directory.
+This repository includes both a CMake workspace in C and a Cargo workspace in Rust at the root directory. Both workspaces use the `/build` directory.
 
 ### CMake
+
+Requires a `riscv64-unknown-elf-gcc` toolchain, which can be downloaded prebuilt from [here](https://github.com/aitesam961/riscv-gnu-prebuilt.git) or compiled from source [here](https://github.com/riscv-collab/riscv-gnu-toolchain.git). Additionally requires CMake itself and Ninja. 
 
 To build with CMake:
 
@@ -32,7 +32,7 @@ cd host/<PROJECT_NUMBER>
 
 ### Cargo
 
-To build with Cargo:
+Requires only Cargo itself. To build with Cargo:
 
 ```console
 cargo run --bin <PROJECT_NAME>
