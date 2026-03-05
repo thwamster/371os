@@ -2,6 +2,7 @@
 #include "library.h"
 #include "literals.h"
 #include "serial.h"
+#include "system.h"
 
 void terminal() {
 	char buffer[MAX_INPUT];

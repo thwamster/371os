@@ -4,6 +4,8 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 
 project(371os LANGUAGES C ASM)
 
+enable_testing()
+
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 include(AddMultiTargetComponent)
 
@@ -11,8 +13,9 @@ add_subdirectory(c/01)
 add_subdirectory(c/21)
 add_subdirectory(c/22)
 add_subdirectory(c/62)
+add_subdirectory(c/62/tests)
 
-add_multi_target_component(c 01 host Ninja my_wc)
-add_multi_target_component(c 21 host Ninja my_malloc)
-add_multi_target_component(c 22 host Ninja hello_world)
-add_multi_target_component(c 62 riscv64-toolchain Ninja isis)
+add_component(01 my_wc host Ninja)
+add_component(21 my_malloc host Ninja)
+add_component(22 hello_world host Ninja)
+add_component(62 isis riscv64-toolchain Ninja)

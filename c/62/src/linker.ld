@@ -3,10 +3,10 @@ ENTRY(start);
 . = 0x80000000;
 
 SECTIONS {
-	/* Include entry point at start of binary */
 	.text : ALIGN(4K) {
 		*(.init);
 		*(.text);
+		. = ALIGN(4);
 	}
 	.bss : ALIGN(4K) {
 		PROVIDE(bss_start = .);

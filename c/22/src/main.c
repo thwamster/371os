@@ -27,25 +27,19 @@ int main() {
 void init() {
 	assert((SIZE & (SIZE - 1)) == 0);
 
-	for (size_t i = 0; i < SIZE >> 6; i++) {
-		BUS[i] = 0xFF;
-	}
+	for (size_t i = 0; i < SIZE >> 6; i++) { BUS[i] = 0xFF; }
 }
 
 size_t my_malloc(const size_t s) {
 	assert(s > 0);
 
-	if (BUS[0] == 0) {
-		init();
-	}
+	if (BUS[0] == 0) { init(); }
 
 	size_t c = 0;
 	size_t m = 0;
 
 	for (size_t i = 0; i < SIZE; i++) {
-		if (c >= s) {
-			break;
-		}
+		if (c >= s) { break; }
 
 		if ((BUS[i / 8] & (1 << i % 8)) == 0) {
 			c += 1;
@@ -57,9 +51,7 @@ size_t my_malloc(const size_t s) {
 	}
 
 	if (c >= s) {
-		for (size_t i = m; i < m + s; i++) {
-			BUS[i / 8] |= 1 << i % 8;
-		}
+		for (size_t i = m; i < m + s; i++) { BUS[i / 8] |= 1 << i % 8; }
 		return m;
 	}
 
@@ -77,9 +69,7 @@ int32_t get(const size_t s) { return BUS[s + 0] | BUS[s + 1] << 8 | BUS[s + 2] <
 
 void print() {
 	for (size_t i = 0; i < SIZE; i++) {
-		if (i % 8 == 0 && i != 0) {
-			printf("\n");
-		}
+		if (i % 8 == 0 && i != 0) { printf("\n"); }
 
 		printf("%lu ", BUS[i]);
 	}
