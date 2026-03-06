@@ -30,7 +30,6 @@ function(add_component project_number project_name toolchain generator)
                 DEPENDS ${toolchain_project_number}
                 COMMAND qemu-system-riscv64
                 -machine virt
-                -bios none
                 -serial mon:stdio
                 -nographic
                 -kernel ${directory_output_project}/kernel.elf
@@ -56,7 +55,6 @@ function(add_component project_number project_name toolchain generator)
                     NAME ${project_number}_integration
                     COMMAND qemu-system-riscv64
                     -machine virt
-                    -bios none
                     -nographic
                     -serial mon:stdio
                     -kernel ${directory_output_tests}/test_isis.elf

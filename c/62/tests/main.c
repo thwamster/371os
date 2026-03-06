@@ -43,10 +43,10 @@ void handle(void) {
 		test_pass();
 	}
 
-	uint64_t mepc;
-	asm volatile("csrr %0, mepc" : "=r"(mepc));
-	mepc += 4;
-	asm volatile("csrw mepc, %0" ::"r"(mepc));
+	uint64_t sepc;
+	asm volatile("csrr %0, sepc" : "=r"(sepc));
+	sepc += 4;
+	asm volatile("csrw sepc, %0" ::"r"(sepc));
 	test_index++;
 	main();
 	exit(fail_count);

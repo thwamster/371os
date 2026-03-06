@@ -7,7 +7,7 @@ project(371os LANGUAGES C ASM)
 enable_testing()
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
-include(AddMultiTargetComponent)
+include(AddComponent)
 
 add_subdirectory(c/01)
 add_subdirectory(c/21)
