@@ -43,7 +43,7 @@ cd build
 cmake ..
 make
 cd host/<PROJECT_NUMBER>
-./<PROJECT_NAME
+./<PROJECT_NAME>
 cd ../..
 ```
 
