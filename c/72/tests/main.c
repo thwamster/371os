@@ -26,24 +26,27 @@ int main(void) {
 	}
 
 	print("All tests completed. Tests passed: ");
-	print_int(test_count - fail_count, 10);
+	print_int((int) (test_count - fail_count), 10);
 	print_char('/');
-	print_int(test_count, 10);
+	print_int((int) test_count, 10);
 	print_line(".");
 	exit(fail_count);
 }
 
 void handle(void) {
+	uint64_t sepc;
+
 	if (tests[test_index].expecting_pass) {
-		print("Unexpected error. ");
+		print("UNEXPECTED ");
+		get_exception();
 		test_fail();
 	}
 	else {
-		print("Expected error. ");
+		print("EXPECTED ");
+		get_exception();
 		test_pass();
 	}
 
-	uint64_t sepc;
 	asm volatile("csrr %0, sepc" : "=r"(sepc));
 	sepc += 4;
 	asm volatile("csrw sepc, %0" ::"r"(sepc));

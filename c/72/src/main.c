@@ -3,9 +3,9 @@
 #include "system.h"
 #include "terminal.h"
 
-int main() { terminal(); }
-
-void handle(void) {
-	print_line("Error. Exiting.");
-	exit(1);
+int main() {
+	print_line("");
+	terminal();
 }
+
+void handle(void) { exit(get_exception()); }

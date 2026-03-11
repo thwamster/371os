@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 4.0)
 set(CMAKE_C_CSTANDARD 23)
-set(CMAKE_VERBOSE_MAKEFILE ON)
 
 project(371os LANGUAGES C ASM)
 

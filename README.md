@@ -32,7 +32,7 @@ cd build
 cmake ../
 make test_<PROJECT_NUMBER>
 cd ..
-ctest -V --test-dir build
+ctest -V --test-dir build -R "<PROJECT_NUMBER>"
 ```
 
 Some of the CMake host projects require command line arguments which are currently not supported. To run these:
