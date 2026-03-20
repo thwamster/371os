@@ -2,8 +2,8 @@
 
 #define RESERVED ""
 
-#define PROMPT_USER "root"
-#define PROMPT_SYSTEM "thwamsters-riscv64"
+#define PROMPT_USER "thwamster"
+#define PROMPT_SYSTEM "qemu-system-riscv64"
 
 #define COMMAND_EXIT "exit"
 #define COMMAND_HELP "help"

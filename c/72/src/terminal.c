@@ -17,7 +17,7 @@ void terminal() {
 		print_reset(".");
 		format(FAINT);
 		print_reset(PROMPT_SYSTEM);
-		print_reset("] > ");
+		print_reset("] ~> ");
 
 		read_line(buffer);
 		execute(buffer);
