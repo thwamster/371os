@@ -1,2 +1,3 @@
 *.ld linguist-language=Linker-Script
 *.S  linguist-language=Assembly
+*.x linguist-language=Linker-Script
