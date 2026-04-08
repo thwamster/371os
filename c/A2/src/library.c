@@ -12,7 +12,7 @@ size_t str_len(const char * s) {
 	return length;
 }
 
-int8_t str_comp(const char * string1, const char * string2) {
+int8_t str_cmp(const char * string1, const char * string2) {
 	unsigned char character1, character2;
 
 	do {

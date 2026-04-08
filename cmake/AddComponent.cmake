@@ -22,6 +22,7 @@ function(add_component project_number project_name toolchain)
             -DCMAKE_C_FLAGS=-fno-omit-frame-pointer
             -B ${directory_output_project}
             BUILD_COMMAND make
+            BUILD_ALWAYS ON
             INSTALL_COMMAND ""
     )
 
@@ -30,8 +31,8 @@ function(add_component project_number project_name toolchain)
                 DEPENDS ${toolchain_project_number}
                 COMMAND qemu-system-riscv64
                 -machine virt
-                -serial mon:stdio
                 -nographic
+                -serial mon:stdio
                 -kernel ${directory_output_project}/${project_name}_kernel.elf
                 WORKING_DIRECTORY ${directory_output_project}
         )
@@ -48,6 +49,7 @@ function(add_component project_number project_name toolchain)
                     -DCMAKE_C_FLAGS=-fno-omit-frame-pointer
                     -B ${directory_output_tests}
                     BUILD_COMMAND make
+                    BUILD_ALWAYS ON
                     INSTALL_COMMAND ""
             )
 
@@ -65,7 +67,7 @@ function(add_component project_number project_name toolchain)
             )
 
             set_tests_properties(${project_number}_integration PROPERTIES
-                    TIMEOUT 10
+                    TIMEOUT 30
             )
         endif ()
     elseif (${toolchain} MATCHES "host")

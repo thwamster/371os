@@ -72,6 +72,6 @@ void handle_interrupt_timer(void);
 void handle_interrupt_external(void);
 void throw_exception(void);
 void print_exception(uint64_t cause, uint64_t epc);
-void print_fault(const struct Symbol * location);
+void print_fault(const struct Symbol * symbol);
 void exit(uint32_t code);
 const struct Symbol * get_symbol(uint64_t address);

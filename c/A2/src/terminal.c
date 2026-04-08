@@ -119,12 +119,12 @@ size_t parse_arguments(char arguments[MAX_ARGUMENTS][MAX_ARGUMENT_LENGTH], const
 }
 
 uint8_t parse_command(const char * input) {
-	if (str_comp(input, "") == 0) { return EMPTY; }
-	if (str_comp(input, COMMAND_EXIT) == 0) { return EXIT; }
-	if (str_comp(input, COMMAND_HELP) == 0) { return HELP; }
-	if (str_comp(input, COMMAND_CLEAR) == 0) { return CLEAR; }
-	if (str_comp(input, COMMAND_TIME) == 0) { return TIME; }
-	if (str_comp(input, COMMAND_EXCEPTION) == 0) { return EXCEPTION; }
+	if (str_cmp(input, "") == 0) { return EMPTY; }
+	if (str_cmp(input, COMMAND_EXIT) == 0) { return EXIT; }
+	if (str_cmp(input, COMMAND_HELP) == 0) { return HELP; }
+	if (str_cmp(input, COMMAND_CLEAR) == 0) { return CLEAR; }
+	if (str_cmp(input, COMMAND_TIME) == 0) { return TIME; }
+	if (str_cmp(input, COMMAND_EXCEPTION) == 0) { return EXCEPTION; }
 
 	return UNKNOWN;
 }

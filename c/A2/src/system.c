@@ -122,14 +122,14 @@ void print_exception(const uint64_t cause, uint64_t epc) {
 	}
 }
 
-void print_fault(const struct Symbol * location) {
-	if (location) {
+void print_fault(const struct Symbol * symbol) {
+	if (symbol) {
 		print(" at ");
-		print(location->name);
+		print(symbol->name);
 		print(" (");
-		print(location->file);
+		print(symbol->file);
 		print(":");
-		print_num(location->line, 10);
+		print_num(symbol->line, 10);
 		print_line(")");
 	}
 }

@@ -10,8 +10,12 @@ int main(void) {
 	if (test_index == 0) { print_line(TEST_INITIATE); }
 
 	while (test_index < test_count) {
+		const struct Symbol * symbol = get_symbol((uint64_t) tests[test_index].test);
+
 		print(TEST_RUN);
 		print_num((int) test_index + 1, 10);
+		print(": ");
+		print(symbol != NULL ? symbol->name : "unknown");
 		print(". ");
 
 		tests[test_index].test();

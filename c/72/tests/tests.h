@@ -6,9 +6,9 @@
 
 void assert(bool expression);
 void test_system_error_handler(void);
-void test_serial_print_line(void);
-void test_library_strcmp(void);
-void test_manual_exception(void);
+void test_serial_print(void);
+void test_library_str_cmp(void);
+void test_system_exception(void);
 
 struct Test {
 	void (*test)(void);
