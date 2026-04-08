@@ -22,7 +22,7 @@ void print(const char * string);
 void print_reset(const char * string);
 void print_line(const char * string);
 void print_char(char character);
-void print_int(int number, int base);
+void print_num(int number, int base);
 void format(uint8_t code);
 void format_reset(void);
 void format_rgb(uint8_t code, uint8_t red, uint8_t green, uint8_t blue);

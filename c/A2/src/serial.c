@@ -1,31 +1,9 @@
 #include "serial.h"
 #include "library.h"
+#include "system.h"
 
-void interrupt_initialize(void) {
-	*UART_LCR = 0x03;
-	*UART_FCR = 0x07;
-	*UART_MCR = 0x00;
-	PLIC_PRIORITY[UART_IRQ] = 1;
-	*PLIC_ENABLE = 0;
-	*PLIC_ENABLE = (1u << UART_IRQ);
-	*PLIC_THRESHOLD = 0;
-	*UART_IER = 0x1;
-
-	__asm__ volatile("li t0, 0x200 \n"
-					 "csrs sie, t0");
-	__asm__ volatile("csrsi sstatus, 0x2");
-}
-
-void interrupt_handle(void) {
-	const uint32_t claim = *PLIC_CLAIM;
-
-	while ((*UART_IIR & 0x1) == 0) {
-		uart_byte = (uint8_t) *UART;
-		uart_byte_ready = 1;
-	}
-
-	*PLIC_CLAIM = claim;
-}
+volatile uint8_t uart_byte_ready = 0;
+volatile uint8_t uart_byte = 0;
 
 void read_line(char * buffer) {
 	size_t max = 0;
@@ -70,7 +48,7 @@ void read_line(char * buffer) {
 		if (c == '\x7f' || c == '\b') {
 			if (now <= 0) { continue; }
 
-			for (int i = (int) now; i <= (int) max; i++) { buffer[i - 1] = buffer[i]; }
+			for (size_t i = now; i <= max; i++) { buffer[i - 1] = buffer[i]; }
 
 			buffer[max] = '\0';
 			max -= 1;
@@ -84,7 +62,7 @@ void read_line(char * buffer) {
 		else {
 			if (max > MAX_INPUT - 1) { continue; }
 
-			for (int i = (int) max; i >= (int) now && i >= 0; i--) { buffer[i + 1] = buffer[i]; }
+			for (int16_t i = (int16_t) max; i >= (int16_t) now && i >= 0; i--) { buffer[i + 1] = buffer[i]; }
 
 			buffer[now] = c;
 			max++;
@@ -126,31 +104,58 @@ void print_line(const char * string) {
 
 void print_char(const char character) { *UART = character; }
 
-void print_int(const int number, const int base) {
+void print_num(const int64_t number, const uint8_t base) { print_num_ext(number, base, 0, false); }
+
+void print_num_ext(const int64_t number, const uint8_t base, const bool prefix, const uint8_t length) {
 	char buffer[MAX_INPUT];
 	char * string = &buffer[sizeof buffer - 1];
+	uint8_t current_length = 0;
 
 	if (base < 2 || base > 16) { return; }
 
 	*string = '\0';
 
-	int value = number < 0 ? number : -number;
+	int64_t value = number < 0 ? number : -number;
 	do {
-		const int quotient = value / base;
-		const int remainder = value % base;
-		*(--string) = "0123456789ABCDEF"[-remainder];
+		const int64_t quotient = value / base;
+		const int64_t remainder = value % base;
+
+		*--string = "0123456789ABCDEF"[-remainder];
+		current_length++;
 		value = quotient;
 	}
 	while (value);
 
-	if (number < 0) { *(--string) = '-'; }
+	while (current_length < length) {
+		*--string = '0';
+		current_length++;
+	}
+
+	if (prefix) {
+		char prefix_char = '\0';
+
+		switch (base) {
+			case 2: prefix_char = 'b'; break;
+			case 8: prefix_char = 'o'; break;
+			case 10: prefix_char = 'd'; break;
+			case 16: prefix_char = 'x'; break;
+			default:;
+		}
+
+		if (prefix_char != '\0') {
+			*--string = prefix_char;
+			*--string = '0';
+		}
+	}
+
+	if (number < 0) { *--string = '-'; }
 
 	print(string);
 }
 
 void format(const uint8_t code) {
 	print("\e[");
-	print_int(code, 10);
+	print_num(code, 10);
 	print("m");
 }
 
@@ -158,13 +163,13 @@ void format_reset() { format(RESET); }
 
 void format_rgb(const uint8_t code, const uint8_t red, const uint8_t green, const uint8_t blue) {
 	print("\e[");
-	print_int(code + RGB, 10);
+	print_num(code + RGB, 10);
 	print(";2;");
-	print_int(red, 10);
+	print_num(red, 10);
 	print(";");
-	print_int(green, 10);
+	print_num(green, 10);
 	print(";");
-	print_int(blue, 10);
+	print_num(blue, 10);
 	print("m");
 }
 
@@ -178,6 +183,6 @@ void cursor_visibility(const bool visible) { print(visible ? "\x1b[?25h" : "\x1b
 
 void cursor_move(const char direction, const uint8_t number) {
 	print("\e[");
-	print_int(number, 10);
+	print_num(number, 10);
 	print_char(direction);
 }

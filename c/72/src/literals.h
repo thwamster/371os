@@ -10,7 +10,7 @@
 #define COMMAND_CLEAR "clear"
 
 #define MESSAGE_PREFIX "isis: "
-#define MESSAGE_ERROR_PARSE "unable to parse command"
+#define MESSAGE_COMMAND_ERROR "unable to parse command"
 #define MESSAGE_COMMAND_UNKNOWN "command not found"
 #define MESSAGE_COMMAND_HELP \
 	" \

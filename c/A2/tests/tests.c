@@ -9,7 +9,7 @@ size_t test_index = 0;
 size_t test_count = sizeof(tests) / sizeof(tests[0]);
 uint32_t fail_count = 0;
 
-void assert(bool expression) {
+void assert(const bool expression) {
 	if (!expression) { throw_exception(); }
 }
 
@@ -20,13 +20,13 @@ void test_serial_print_line(void) {
 	print_reset("0");
 	print_line("0");
 	print_char('0');
-	print_int('0', 10);
+	print_num('0', 10);
 	print_line("");
 }
 
 void test_library_strcmp(void) {
-	assert(strcmp("0", "0") == 0);
-	assert(strcmp("0", "1") != 0);
+	assert(str_comp("0", "0") == 0);
+	assert(str_comp("0", "1") != 0);
 }
 
 void test_manual_exception(void) { throw_exception(); }

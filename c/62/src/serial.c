@@ -98,7 +98,7 @@ void print_line(const char * string) {
 
 void print_char(const char character) { *UART = character; }
 
-void print_int(const int number, const int base) {
+void print_num(const int number, const int base) {
 	char buffer[MAX_INPUT];
 	char * string = &buffer[sizeof buffer - 1];
 
@@ -122,7 +122,7 @@ void print_int(const int number, const int base) {
 
 void format(const uint8_t code) {
 	print("\e[");
-	print_int(code, 10);
+	print_num(code, 10);
 	print("m");
 }
 
@@ -130,13 +130,13 @@ void format_reset() { format(RESET); }
 
 void format_rgb(const uint8_t code, const uint8_t red, const uint8_t green, const uint8_t blue) {
 	print("\e[");
-	print_int(code + RGB, 10);
+	print_num(code + RGB, 10);
 	print(";2;");
-	print_int(red, 10);
+	print_num(red, 10);
 	print(";");
-	print_int(green, 10);
+	print_num(green, 10);
 	print(";");
-	print_int(blue, 10);
+	print_num(blue, 10);
 	print("m");
 }
 
@@ -150,6 +150,6 @@ void cursor_visibility(const bool visible) { print(visible ? "\x1b[?25h" : "\x1b
 
 void cursor_move(const char direction, const uint8_t number) {
 	print("\e[");
-	print_int(number, 10);
+	print_num(number, 10);
 	print_char(direction);
 }

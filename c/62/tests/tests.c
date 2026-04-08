@@ -23,7 +23,7 @@ void test_serial_print_line(void) {
 	print_reset("0");
 	print_line("0");
 	print_char('0');
-	print_int('0', 10);
+	print_num('0', 10);
 	print_line("");
 }
 

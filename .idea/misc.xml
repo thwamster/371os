@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="Black">
+    <option name="sdkName" value="Python 3.13 (371os)" />
+  </component>
   <component name="CMakePythonSetting">
     <option name="pythonIntegrationState" value="YES" />
   </component>
@@ -7,10 +10,11 @@
   <component name="CidrRootsConfiguration">
     <sourceRoots>
       <file path="$PROJECT_DIR$/c" />
-      <file path="$PROJECT_DIR$/cmake" />
+      <file path="$PROJECT_DIR$/py" />
       <file path="$PROJECT_DIR$/rs" />
     </sourceRoots>
     <excludeRoots>
+      <file path="$PROJECT_DIR$/.venv" />
       <file path="$PROJECT_DIR$/build" />
     </excludeRoots>
   </component>

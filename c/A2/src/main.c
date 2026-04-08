@@ -4,19 +4,17 @@
 #include "terminal.h"
 
 int main() {
-	interrupt_initialize();
+	initialize();
 	print_line("");
 	terminal();
 }
 
-void handle(void) {
-	uint64_t cause;
-	__asm__ volatile("csrr %0, scause" : "=r"(cause));
-
-	if (cause & CAUSE_INTERRUPT) {
-		if ((cause & CAUSE_CODE) == 9) { interrupt_handle(); }
+void handle(const uint64_t cause, const uint64_t epc) {
+	if (cause & CAUSE_INTERRUPTION) {
+		handle_interrupt(cause, epc);
 		return;
 	}
 
-	exit(get_exception());
+	print_exception(cause, epc);
+	exit(cause & CAUSE_CODE);
 }

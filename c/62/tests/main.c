@@ -8,7 +8,7 @@ int main(void) {
 
 	while (test_index < test_count) {
 		print("Running test ");
-		print_int((int) test_index + 1, 10);
+		print_num((int) test_index + 1, 10);
 		print(". ");
 
 		tests[test_index].test();
@@ -26,9 +26,9 @@ int main(void) {
 	}
 
 	print("All tests completed. Tests passed: ");
-	print_int(test_count - fail_count, 10);
+	print_num(test_count - fail_count, 10);
 	print_char('/');
-	print_int(test_count, 10);
+	print_num(test_count, 10);
 	print_line(".");
 	exit(fail_count);
 }

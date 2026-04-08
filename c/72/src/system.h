@@ -12,4 +12,4 @@ static volatile uint32_t SIFIVE_FAIL = 0x3333;
 
 void exit(uint32_t code);
 void throw_exception(void);
-uint64_t get_exception(void);
+uint64_t print_exception(void);

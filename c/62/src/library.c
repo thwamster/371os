@@ -19,7 +19,7 @@ int strcmp(const char * string1, const char * string2) {
 	return character1 - character2;
 }
 
-bool is_empty(const char c) { return c == ' ' || c == '\0' || c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r'; }
+bool char_is_empty(const char c) { return c == ' ' || c == '\0' || c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r'; }
 
 int parse_int(const char * string) {
 	int value = 0;

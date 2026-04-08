@@ -8,4 +8,4 @@ int main() {
 	terminal();
 }
 
-void handle(void) { exit(get_exception()); }
+void handle(void) { exit(print_exception()); }

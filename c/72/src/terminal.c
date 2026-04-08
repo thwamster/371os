@@ -62,7 +62,7 @@ size_t parse_arguments(char arguments[MAX_ARGUMENTS][MAX_ARGUMENT_LENGTH], const
 		c = input[index];
 		index++;
 
-		if (is_empty(c) && !in_quote) {
+		if (char_is_empty(c) && !in_quote) {
 			if (length > 0) {
 				arguments[count][length] = '\0';
 				length = 0;
@@ -84,7 +84,7 @@ size_t parse_arguments(char arguments[MAX_ARGUMENTS][MAX_ARGUMENT_LENGTH], const
 
 	if (in_quote) {
 		print(MESSAGE_PREFIX);
-		print_line(MESSAGE_ERROR_PARSE);
+		print_line(MESSAGE_COMMAND_ERROR);
 		return 0;
 	}
 

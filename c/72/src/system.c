@@ -34,7 +34,7 @@ __attribute__((naked, aligned(4))) void handler(void) {
 
 void throw_exception(void) { __asm__ volatile("ebreak"); }
 
-uint64_t get_exception(void) {
+uint64_t print_exception(void) {
 	uint64_t cause;
 	uint64_t code;
 	uint64_t frame_now;
@@ -60,7 +60,7 @@ uint64_t get_exception(void) {
 		frame_next = *(uint64_t *) (frame_now - 16);
 
 		print(" AT ");
-		print_int((int) address, 16);
+		print_num((int) address, 16);
 		print_line("");
 
 		if (frame_next <= frame_now) { break; }

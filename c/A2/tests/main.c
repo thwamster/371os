@@ -1,70 +1,58 @@
 #include "main.h"
+#include "../src/literals.h"
 #include "../src/serial.h"
 #include "../src/system.h"
 #include "tests.h"
 
 int main(void) {
-	interrupt_initialize();
-	print_line("");
+	initialize();
 
-	if (test_index == 0) { print_line("Initiating testing."); }
+	if (test_index == 0) { print_line(TEST_INITIATE); }
 
 	while (test_index < test_count) {
-		print("Running test ");
-		print_int((int) test_index + 1, 10);
+		print(TEST_RUN);
+		print_num((int) test_index + 1, 10);
 		print(". ");
 
 		tests[test_index].test();
 
 		if (tests[test_index].expecting_pass) {
-			print("Expected execution. ");
+			print(TEST_EXECUTE_EXPECTED);
 			test_pass();
 		}
 		else {
-			print("Unexpected execution. ");
+			print(TEST_EXECUTE_UNEXPECTED);
 			test_fail();
 		}
 
 		test_index++;
 	}
 
-	print("All tests completed. Tests passed: ");
-	print_int((int) (test_count - fail_count), 10);
+	print(TEST_COMPLETE);
+	print_num((int) (test_count - fail_count), 10);
 	print_char('/');
-	print_int((int) test_count, 10);
+	print_num((int) test_count, 10);
 	print_line(".");
 	exit(fail_count);
 }
 
-void handle(void) {
-	uint64_t cause;
-	__asm__ volatile("csrr %0, scause" : "=r"(cause));
-
-	if (cause & CAUSE_INTERRUPT) {
-		if ((cause & CAUSE_CODE) == 9) { interrupt_handle(); }
-		print("UNEXPECTED INTERRUPT\n");
-		get_exception();
-		test_fail();
-		exit(cause);
+void handle(const uint64_t cause, const uint64_t epc) {
+	if (cause & CAUSE_INTERRUPTION) {
+		handle_interrupt(cause, epc);
 		return;
 	}
 
-	uint64_t sepc;
-
 	if (tests[test_index].expecting_pass) {
-		print("UNEXPECTED ");
-		get_exception();
+		print_exception(cause, epc);
+		print(TEST_EXCEPTION_EXPECTED);
 		test_fail();
 	}
 	else {
-		print("EXPECTED ");
-		get_exception();
+		print_exception(cause, epc);
+		print(TEST_EXCEPTION_UNEXPECTED);
 		test_pass();
 	}
 
-	asm volatile("csrr %0, sepc" : "=r"(sepc));
-	sepc += 4;
-	asm volatile("csrw sepc, %0" ::"r"(sepc));
 	test_index++;
 	main();
 	exit(fail_count);

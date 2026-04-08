@@ -45,7 +45,7 @@ void output() {
 	for (int i = 1; i <= file_count; i++) {
 		const char * path = file_paths[i];
 
-		if (strlen(path) > MAX_LENGTH) {
+		if (string_length(path) > MAX_LENGTH) {
 			throw_error(path, TOO_LONG);
 			continue;
 		}
@@ -144,7 +144,7 @@ int parse_option_long(const char * s) {
 }
 
 int parse_option_short(const char * s) {
-	while (strlen(s) > 0) {
+	while (string_length(s) > 0) {
 		if (strncmp(s, "c", 1) == 0) { enable_option(BYTES); }
 		else if (strncmp(s, "m", 1) == 0) { enable_option(CHARS); }
 		else if (strncmp(s, "l", 1) == 0) { enable_option(NEWLINES); }
@@ -229,7 +229,7 @@ int throw_error(const char * s, const int n) {
 		case CANNOT_OPEN:
 			{
 				printf("wc: cannot open '");
-				for (int i = 0; i < strlen(s); i++) {
+				for (int i = 0; i < string_length(s); i++) {
 					if (isprint(s[i])) { printf("%c", s[i]); }
 					else { printf("'\\x%02x'", s[i]); }
 				}
