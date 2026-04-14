@@ -64,7 +64,7 @@ extern const size_t symbol_count;
 extern volatile uint8_t uart_byte_ready;
 extern volatile uint8_t uart_byte;
 
-void initialize(void);
+void initialize_system(void);
 void handler(void);
 void handle_interrupt(uint64_t cause, uint64_t epc);
 void handle_interrupt_software(void);
@@ -72,6 +72,6 @@ void handle_interrupt_timer(void);
 void handle_interrupt_external(void);
 void throw_exception(void);
 void print_exception(uint64_t cause, uint64_t epc);
-void print_fault(const struct Symbol * symbol);
+void print_symbol(const struct Symbol * symbol);
 void exit(uint32_t code);
 const struct Symbol * get_symbol(uint64_t address);

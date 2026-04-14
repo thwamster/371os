@@ -1,11 +1,10 @@
 #include "main.h"
-#include "serial.h"
+#include "exception.h"
 #include "system.h"
 #include "terminal.h"
 
 int main() {
 	initialize_system();
-	print_line("");
 	terminal();
 }
 

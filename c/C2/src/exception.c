@@ -1,4 +1,5 @@
-#include "system.h"
+#include "exception.h"
+#include "layout.h"
 #include "literals.h"
 #include "serial.h"
 #include "timer.h"
@@ -6,7 +7,7 @@
 __attribute__((weak)) const struct Symbol symbol_table[1] = {{0, "unknown", "unknown", 0}};
 __attribute__((weak)) const size_t symbol_count = 0;
 
-void initialize_system(void) {
+void initialize_exception(void) {
 	*UART_LCR = 0x03;
 	*UART_FCR = 0x07;
 	*UART_MCR = 0x00;
@@ -103,19 +104,23 @@ void print_exception(const uint64_t cause, uint64_t epc) {
 	uint64_t frame_now;
 	uint64_t frame_next;
 	uint64_t address;
+	uint64_t fault;
 
+	asm volatile("csrr %0, stval" : "=r"(fault));
 	__asm__ volatile("mv %0, s0" : "=r"(frame_now));
 
 	print(cause & CAUSE_INTERRUPTION ? ERROR_INTERRUPTION : ERROR_EXCEPTION);
 	print(cause & CAUSE_INTERRUPTION ? ERROR_INTERRUPTIONS[cause & CAUSE_CODE] : ERROR_EXCEPTIONS[cause & CAUSE_CODE]);
-	print_line(":");
+	print(": ");
+	print_num(fault, 16);
+	print_line("");
 	print_symbol(get_symbol(epc));
 
 	for (int16_t depth = -3; depth < 16 && frame_now != 0; depth++) {
 		frame_next = *(uint64_t *) (frame_now - 16);
 		address = *(uint64_t *) (frame_now - 8);
 
-		if (address < 0x80200000 || address > 0x80400000) { break; }
+		if (address < KERNEL_START || address > KERNEL_END) { break; }
 		if (depth >= 0) { print_symbol(get_symbol(address)); }
 
 		frame_now = frame_next;
@@ -146,7 +151,7 @@ const struct Symbol * get_symbol(const uint64_t address) {
 }
 
 void exit(uint32_t code) {
-	if (code == 0) { *SIFIVE = SIFIVE_PASS; }
-	else { *SIFIVE = code << 16 | SIFIVE_FAIL; }
+	if (code == 0) { *SIFIVE_EXIT = SIFIVE_PASS; }
+	else { *SIFIVE_EXIT = code << 16 | SIFIVE_FAIL; }
 	while (true) { __asm__ volatile("wfi"); }
 }

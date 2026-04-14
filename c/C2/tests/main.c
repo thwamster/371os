@@ -1,4 +1,5 @@
 #include "main.h"
+#include "../src/exception.h"
 #include "../src/literals.h"
 #include "../src/serial.h"
 #include "../src/system.h"
