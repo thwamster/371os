@@ -15,10 +15,10 @@ extern size_t test_count;
 extern uint32_t fail_count;
 
 void assert(bool expression);
-void test_system_exception(void);
-void test_system_error_handler(void);
-void test_system_get_symbol(void);
-void test_system_plic(void);
+void test_exception_manual(void);
+void test_exception_error_handler(void);
+void test_exception_get_symbol(void);
+void test_exception_plic(void);
 void test_serial_print(void);
 void test_serial_print_num_bases(void);
 void test_serial_format(void);

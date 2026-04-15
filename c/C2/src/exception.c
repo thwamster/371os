@@ -7,7 +7,7 @@
 __attribute__((weak)) const struct Symbol symbol_table[1] = {{0, "unknown", "unknown", 0}};
 __attribute__((weak)) const size_t symbol_count = 0;
 
-void initialize_exception(void) {
+void exception_initialize(void) {
 	*UART_LCR = 0x03;
 	*UART_FCR = 0x07;
 	*UART_MCR = 0x00;
@@ -109,11 +109,7 @@ void print_exception(const uint64_t cause, uint64_t epc) {
 	asm volatile("csrr %0, stval" : "=r"(fault));
 	__asm__ volatile("mv %0, s0" : "=r"(frame_now));
 
-	print(cause & CAUSE_INTERRUPTION ? ERROR_INTERRUPTION : ERROR_EXCEPTION);
-	print(cause & CAUSE_INTERRUPTION ? ERROR_INTERRUPTIONS[cause & CAUSE_CODE] : ERROR_EXCEPTIONS[cause & CAUSE_CODE]);
-	print(": ");
-	print_num(fault, 16);
-	print_line("");
+	print_cause(cause, fault);
 	print_symbol(get_symbol(epc));
 
 	for (int16_t depth = -3; depth < 16 && frame_now != 0; depth++) {
@@ -124,6 +120,30 @@ void print_exception(const uint64_t cause, uint64_t epc) {
 		if (depth >= 0) { print_symbol(get_symbol(address)); }
 
 		frame_now = frame_next;
+	}
+}
+
+void print_cause(const uint64_t cause, const uint64_t fault) {
+	print(cause & CAUSE_INTERRUPTION ? ERROR_INTERRUPTION : ERROR_EXCEPTION);
+	print(cause & CAUSE_INTERRUPTION ? ERROR_INTERRUPTIONS[cause & CAUSE_CODE] : ERROR_EXCEPTIONS[cause & CAUSE_CODE]);
+	print_line(":");
+
+	switch (cause & CAUSE_CODE) {
+		case EXCEPTION_INSTRUCTION_PAGE_FAULT:
+		case EXCEPTION_LOAD_PAGE_FAULT:
+		case EXCEPTION_STORE_PAGE_FAULT:
+		case EXCEPTION_INSTRUCTION_FAULT:
+		case EXCEPTION_LOAD_FAULT:
+		case EXCEPTION_STORE_FAULT:
+		case EXCEPTION_INSTRUCTION_MISALIGNED:
+		case EXCEPTION_LOAD_MISALIGNED:
+		case EXCEPTION_STORE_MISALIGNED:
+		case EXCEPTION_ILLEGAL_INSTRUCTION:
+			print(" at ");
+			print_num_ext((int64_t) fault, 16, true, 8);
+			print_line("");
+			break;
+		default: break;
 	}
 }
 
@@ -148,6 +168,17 @@ const struct Symbol * get_symbol(const uint64_t address) {
 	}
 
 	return found;
+}
+
+void assert(const bool expression) {
+	if (!expression) { throw_exception(); }
+}
+
+void assert_ext(const bool expression, const char * message) {
+	if (!expression) {
+		print_line(message);
+		throw_exception();
+	}
 }
 
 void exit(uint32_t code) {

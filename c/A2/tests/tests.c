@@ -5,7 +5,7 @@
 #include "../src/timer.h"
 
 struct Test tests[] = {
-	{test_system_exception, false},		{test_system_error_handler, false},	 {test_system_get_symbol, true},  {test_system_plic, true},
+	{test_exception_manual, false},		{test_exception_error_handler, false},	 {test_exception_get_symbol, true},  {test_exception_plic, true},
 	{test_serial_print, true},			{test_serial_print_num_bases, true}, {test_serial_format, true},	  {test_serial_cursor, true},
 	{test_library_str_cmp, true},		{test_library_str_len, true},		 {test_library_str_to_num, true}, {test_library_str_clear, true},
 	{test_library_char_is_empty, true}, {test_library_memory_set, true},	 {test_timer_set_time, true},	  {test_timer_parse_time, true},
@@ -19,14 +19,14 @@ void assert(const bool expression) {
 	if (!expression) { throw_exception(); }
 }
 
-void test_system_exception() { throw_exception(); }
+void test_exception_manual() { throw_exception(); }
 
-void test_system_error_handler() {
+void test_exception_error_handler() {
 	assert(true);
 	assert(false);
 }
 
-void test_system_get_symbol() {
+void test_exception_get_symbol() {
 	if (symbol_count == 0) return;
 	const struct Symbol * sym = get_symbol(symbol_table[0].address);
 	assert(sym != (void *) 0);
@@ -35,7 +35,7 @@ void test_system_get_symbol() {
 	assert(missing == (void *) 0);
 }
 
-void test_system_plic() {
+void test_exception_plic() {
 	const volatile uint32_t priority = *PLIC_PRIORITY;
 	const volatile uint32_t enable = *PLIC_ENABLE;
 	const volatile uint32_t threshold = *PLIC_THRESHOLD;
@@ -91,31 +91,31 @@ void test_serial_cursor() {
 }
 
 void test_library_str_cmp() {
-	assert(str_cmp("0", "0") == 0);
-	assert(str_cmp("0", "1") != 0);
+	assert(string_compare("0", "0") == 0);
+	assert(string_compare("0", "1") != 0);
 }
 
 void test_library_str_len() {
-	assert(str_len("") == 0);
-	assert(str_len("hello") == 5);
-	assert(str_len("0") == 1);
+	assert(string_length("") == 0);
+	assert(string_length("hello") == 5);
+	assert(string_length("0") == 1);
 }
 
 void test_library_str_to_num() {
-	assert(str_to_num("0", 10) == 0);
-	assert(str_to_num("1", 10) == 1);
-	assert(str_to_num("255", 10) == 255);
-	assert(str_to_num("ff", 16) == 255);
-	assert(str_to_num("FF", 16) == 255);
-	assert(str_to_num("11111111", 2) == 255);
-	assert(str_to_num("-1", 10) == -1);
-	assert(str_to_num_len("1234", 10, 2) == 12);
+	assert(string_to_num("0", 10) == 0);
+	assert(string_to_num("1", 10) == 1);
+	assert(string_to_num("255", 10) == 255);
+	assert(string_to_num("ff", 16) == 255);
+	assert(string_to_num("FF", 16) == 255);
+	assert(string_to_num("11111111", 2) == 255);
+	assert(string_to_num("-1", 10) == -1);
+	assert(string_to_num_ext("1234", 10, 2) == 12);
 }
 
 void test_library_str_clear() {
 	char buf[8];
 	memory_set(buf, 0xFF, sizeof(buf));
-	str_clear(buf, sizeof(buf));
+	string_clear(buf, sizeof(buf));
 	for (size_t i = 0; i < sizeof(buf); i++) { assert(buf[i] == '\0'); }
 }
 

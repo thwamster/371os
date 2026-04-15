@@ -3,7 +3,7 @@
 #include "../src/serial.h"
 
 extern struct Test tests[] = {
-	{test_system_error_handler, false},
+	{test_exception_error_handler, false},
 	{test_serial_print, true},
 	{test_library_str_cmp, true},
 };
@@ -16,7 +16,7 @@ void assert(bool expression) {
 	if (!expression) { *(int *) 0 = 0; }
 }
 
-void test_system_error_handler(void) { assert(false); }
+void test_exception_error_handler(void) { assert(false); }
 
 void test_serial_print(void) {
 	print("0");

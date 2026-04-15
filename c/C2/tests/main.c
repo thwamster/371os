@@ -5,8 +5,13 @@
 #include "../src/system.h"
 #include "tests.h"
 
+bool initialized = false;
+
 int main(void) {
-	initialize_system();
+	if (!initialized) {
+		initialize_system();
+		initialized = true;
+	}
 
 	if (test_index == 0) { print_line(TEST_INITIATE); }
 

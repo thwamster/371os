@@ -5,10 +5,10 @@
 #include <stdint.h>
 
 void assert(bool expression);
-void test_system_error_handler(void);
+void test_exception_error_handler(void);
 void test_serial_print(void);
 void test_library_str_cmp(void);
-void test_system_exception(void);
+void test_exception_manual(void);
 
 struct Test {
 	void (*test)(void);

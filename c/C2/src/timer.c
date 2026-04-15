@@ -1,6 +1,6 @@
 #include "timer.h"
-#include "library.h"
 #include "serial.h"
+#include "string.h"
 
 volatile Clock clock;
 
@@ -17,7 +17,7 @@ void schedule_time(const uint64_t offset) {
 }
 
 bool parse_time(const char * s) {
-	return s && str_len(s) == 6 && set_time(str_to_num_len(s, 10, 2), str_to_num_len(s + 2, 10, 2), str_to_num_len(s + 4, 10, 2));
+	return s && string_length(s) == 6 && set_time(string_to_num_ext(s, 10, 2), string_to_num_ext(s + 2, 10, 2), string_to_num_ext(s + 4, 10, 2));
 }
 
 bool set_time(const uint8_t hours, const uint8_t minutes, const uint8_t seconds) {

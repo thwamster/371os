@@ -1,23 +1,10 @@
 #pragma once
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
 #define MANUAL_EXCEPTION *(int *) 0 = 0
-
-struct Symbol {
-	uint64_t address;
-	const char * name;
-	const char * file;
-	int line;
-};
-
-static const uint64_t TIMER_INTERVAL = 10000000;
-static const uint32_t UART_IRQ = 10;
-static const uint32_t SIFIVE_PASS = 0x5555;
-static const uint32_t SIFIVE_FAIL = 0x3333;
-static const uint64_t CAUSE_INTERRUPTION = 1ULL << 63;
-static const uint64_t CAUSE_CODE = ~(1ULL << 63);
 
 enum Interruption {
 	INTERRUPTION_SOFTWARE = 1,
@@ -44,12 +31,26 @@ enum Exception {
 	EXCEPTION_HARDWARE_ERROR = 19,
 };
 
+struct Symbol {
+	uint64_t address;
+	const char * name;
+	const char * file;
+	int line;
+};
+
+static const uint64_t TIMER_INTERVAL = 10000000;
+static const uint32_t UART_IRQ = 10;
+static const uint32_t SIFIVE_PASS = 0x5555;
+static const uint32_t SIFIVE_FAIL = 0x3333;
+static const uint64_t CAUSE_INTERRUPTION = 1ULL << 63;
+static const uint64_t CAUSE_CODE = ~(1ULL << 63);
+
 extern const struct Symbol symbol_table[];
 extern const size_t symbol_count;
 extern volatile uint8_t uart_byte_ready;
 extern volatile uint8_t uart_byte;
 
-void initialize_exception(void);
+void exception_initialize(void);
 void handler(void);
 void handle_interrupt(uint64_t cause, uint64_t epc);
 void handle_interrupt_software(void);
@@ -57,6 +58,9 @@ void handle_interrupt_timer(void);
 void handle_interrupt_external(void);
 void throw_exception(void);
 void print_exception(uint64_t cause, uint64_t epc);
+void print_cause(uint64_t cause, uint64_t fault);
 void print_symbol(const struct Symbol * symbol);
+void assert(bool expression);
+void assert_ext(bool expression, const char * message);
 void exit(uint32_t code);
 const struct Symbol * get_symbol(uint64_t address);

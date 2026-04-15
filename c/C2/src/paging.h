@@ -1,6 +1,5 @@
 #pragma once
 
-#include <stddef.h>
 #include <stdint.h>
 
 enum PTEFlags {
@@ -20,11 +19,14 @@ enum VPNMasks {
 	VPN3 = 12,
 };
 
+struct __attribute__((aligned(4096))) PageTable {
+	uint64_t entries[512];
+};
+
 static const uint64_t PAGE_SHIFT = 12;
 static const uint64_t PTE_PPN_SHIFT = 10;
 static const uint64_t VPN_MASK = 0x1FF;
 static const uint64_t SATP_SV39 = 8ULL << 60;
-
 static const uint64_t FLAGS_PROTECTED = READ | ACCESSED | DIRTY;
 static const uint64_t FLAGS_CODE = READ | EXECUTE | ACCESSED | DIRTY;
 static const uint64_t FLAGS_DATA = READ | WRITE | ACCESSED | DIRTY;
@@ -39,12 +41,7 @@ extern char data_end;
 extern char bss_start;
 extern char bss_end;
 
-struct __attribute__((aligned(4096))) PageTable {
-	uint64_t entries[512];
-};
-
-struct PageTable * initialize_paging(void);
-void enable_paging(struct PageTable * root);
+struct PageTable * paging_initialize(void);
 void map_page(struct PageTable * root, uint64_t address_virt, uint64_t address_phys, uint64_t flags);
 void map_range(struct PageTable * root, uint64_t start, uint64_t end, uint64_t flags);
 void map_section(struct PageTable * root, const char * start, const char * end, uint64_t flags);

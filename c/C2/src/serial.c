@@ -1,7 +1,6 @@
 #include "serial.h"
 #include "exception.h"
 #include "layout.h"
-#include "library.h"
 
 volatile uint8_t uart_byte_ready = 0;
 volatile uint8_t uart_byte = 0;

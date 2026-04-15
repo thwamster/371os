@@ -1,18 +1,18 @@
 #include "library.h"
 
-void * memory_set(void * dest, register uint8_t val, register size_t len) {
-	register unsigned char * ptr = (unsigned char *) dest;
-	while (len-- > 0) *ptr++ = val;
-	return dest;
+void * memory_set(void * destination, register uint8_t value, register size_t size) {
+	register unsigned char * ptr = (unsigned char *) destination;
+	while (size-- > 0) *ptr++ = value;
+	return destination;
 }
 
-size_t str_len(const char * s) {
+size_t string_length(const char * s) {
 	size_t length = 0;
 	while (s[length] != '\0') { length++; }
 	return length;
 }
 
-int8_t str_cmp(const char * string1, const char * string2) {
+int8_t string_compare(const char * string1, const char * string2) {
 	unsigned char character1, character2;
 
 	do {
@@ -25,12 +25,12 @@ int8_t str_cmp(const char * string1, const char * string2) {
 	return (int8_t) (character1 - character2);
 }
 
-int64_t str_to_num(const char * string, const uint8_t base) {
+int64_t string_to_num(const char * string, const uint8_t base) {
 	if (!string) { return 0; }
-	return str_to_num_len(string, base, str_len(string));
+	return string_to_num_ext(string, base, string_length(string));
 }
 
-int64_t str_to_num_len(const char * string, const uint8_t base, const size_t length) {
+int64_t string_to_num_ext(const char * string, const uint8_t base, const size_t length) {
 	int64_t value = 0;
 	int8_t sign = 1;
 	size_t i = 0;
@@ -59,6 +59,6 @@ int64_t str_to_num_len(const char * string, const uint8_t base, const size_t len
 	return sign * value;
 }
 
-void str_clear(char * buffer, const size_t size) { memory_set(buffer, '\0', size); }
+void string_clear(char * buffer, const size_t size) { memory_set(buffer, '\0', size); }
 
 bool char_is_empty(const char c) { return c == ' ' || c == '\0' || c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r'; }

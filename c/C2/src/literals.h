@@ -34,6 +34,8 @@
 #define TEST_EXCEPTION_EXPECTED "Expected exception. "
 #define TEST_EXCEPTION_UNEXPECTED "Expected exception. "
 #define TEST_COMPLETE "All tests completed. Tests passed: "
+#define TEST_PASS "Test Result: PASS."
+#define TEST_FAIL "Test Result: FAIL."
 
 extern const char * ERROR_INTERRUPTIONS[];
 extern const char * ERROR_EXCEPTIONS[];

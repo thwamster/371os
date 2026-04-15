@@ -2,8 +2,8 @@
 #include "allocator.h"
 #include "layout.h"
 
-struct PageTable * initialize_paging(void) {
-	struct PageTable * root = (struct PageTable *) allocate_frame();
+struct PageTable * paging_initialize(void) {
+	struct PageTable * root = (struct PageTable *) frame_allocate();
 
 	map_section(root, &text_start, &text_end, FLAGS_CODE);
 	map_section(root, &rodata_start, &rodata_end, FLAGS_PROTECTED);
@@ -16,13 +16,11 @@ struct PageTable * initialize_paging(void) {
 	map_range(root, (uint64_t) CLINT_BASE, (uint64_t) MTIME, FLAGS_DATA);
 	map_range(root, (uint64_t) SIFIVE_EXIT, (uint64_t) SIFIVE_EXIT, FLAGS_DATA);
 
-	return root;
-}
-
-void enable_paging(struct PageTable * root) {
 	uint64_t satp = SATP_SV39 | pa_to_ppn((uint64_t) root);
 	asm volatile("csrw satp, %0" : : "r"(satp));
 	asm volatile("sfence.vma");
+
+	return root;
 }
 
 void map_page(struct PageTable * root, const uint64_t address_virt, const uint64_t address_phys, const uint64_t flags) {
@@ -30,10 +28,10 @@ void map_page(struct PageTable * root, const uint64_t address_virt, const uint64
 	const uint64_t v1 = address_virt >> VPN2 & VPN_MASK;
 	const uint64_t v0 = address_virt >> VPN3 & VPN_MASK;
 
-	if (!(root->entries[v2] & VALID)) { root->entries[v2] = create_branch(allocate_frame()); }
+	if (!(root->entries[v2] & VALID)) { root->entries[v2] = create_branch(frame_allocate()); }
 
 	struct PageTable * level1 = (struct PageTable *) ppn_to_pa(root->entries[v2] >> PTE_PPN_SHIFT);
-	if (!(level1->entries[v1] & VALID)) { level1->entries[v1] = create_branch(allocate_frame()); }
+	if (!(level1->entries[v1] & VALID)) { level1->entries[v1] = create_branch(frame_allocate()); }
 
 	struct PageTable * level0 = (struct PageTable *) ppn_to_pa(level1->entries[v1] >> PTE_PPN_SHIFT);
 	level0->entries[v0] = create_leaf(address_phys, flags);

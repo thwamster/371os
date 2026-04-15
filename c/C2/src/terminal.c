@@ -1,20 +1,21 @@
 #include "terminal.h"
+#include "allocator.h"
 #include "exception.h"
-#include "library.h"
 #include "literals.h"
 #include "serial.h"
+#include "string.h"
 #include "timer.h"
 
 void terminal() {
 	char buffer[MAX_INPUT];
 
-	str_clear(buffer, MAX_INPUT);
+	string_clear(buffer, MAX_INPUT);
 	format_reset();
 	print(MESSAGE_TIME_PROMPT);
 	read_line(buffer);
 
 	while (!parse_time(buffer)) {
-		if (str_cmp(buffer, COMMAND_EXIT) == 0) { exit(0); }
+		if (string_compare(buffer, COMMAND_EXIT) == 0) { exit(0); }
 
 		format_reset();
 		print(MESSAGE_PREFIX);
@@ -25,12 +26,12 @@ void terminal() {
 
 		print(MESSAGE_TIME_PROMPT);
 
-		str_clear(buffer, MAX_INPUT);
+		string_clear(buffer, MAX_INPUT);
 		read_line(buffer);
 	}
 
 	while (true) {
-		str_clear(buffer, MAX_INPUT);
+		string_clear(buffer, MAX_INPUT);
 		format_reset();
 
 		print_prompt();
@@ -50,7 +51,7 @@ void execute(const char * input) {
 
 	switch (command) {
 		case EMPTY: break;
-		case EXIT: exit(count > 1 ? str_to_num(arguments[1], 10) : 0); break;
+		case EXIT: exit(count > 1 ? string_to_num(arguments[1], 10) : 0); break;
 		case HELP:
 			print(MESSAGE_PREFIX);
 			print_line(MESSAGE_COMMAND_HELP);
@@ -121,12 +122,12 @@ size_t parse_arguments(char arguments[MAX_ARGUMENTS][MAX_ARGUMENT_LENGTH], const
 }
 
 uint8_t parse_command(const char * input) {
-	if (str_cmp(input, "") == 0) { return EMPTY; }
-	if (str_cmp(input, COMMAND_EXIT) == 0) { return EXIT; }
-	if (str_cmp(input, COMMAND_HELP) == 0) { return HELP; }
-	if (str_cmp(input, COMMAND_CLEAR) == 0) { return CLEAR; }
-	if (str_cmp(input, COMMAND_TIME) == 0) { return TIME; }
-	if (str_cmp(input, COMMAND_EXCEPTION) == 0) { return EXCEPTION; }
+	if (string_compare(input, "") == 0) { return EMPTY; }
+	if (string_compare(input, COMMAND_EXIT) == 0) { return EXIT; }
+	if (string_compare(input, COMMAND_HELP) == 0) { return HELP; }
+	if (string_compare(input, COMMAND_CLEAR) == 0) { return CLEAR; }
+	if (string_compare(input, COMMAND_TIME) == 0) { return TIME; }
+	if (string_compare(input, COMMAND_EXCEPTION) == 0) { return EXCEPTION; }
 
 	return UNKNOWN;
 }
