@@ -7,9 +7,9 @@ function(add_component project_number project_name toolchain)
     set(toolchain_file ${CMAKE_SOURCE_DIR}/cmake/toolchains/${toolchain}.cmake)
     set(directory_project ${CMAKE_SOURCE_DIR}/c/${project_number})
     set(directory_output_project ${CMAKE_BINARY_DIR}/${toolchain}/${project_number})
-    set(toolchain_tests ${project_number}-${toolchain}-tests)
-    set(directory_tests ${CMAKE_SOURCE_DIR}/c/${project_number}/tests)
-    set(directory_output_tests ${CMAKE_BINARY_DIR}/${toolchain}/${project_number}_tests)
+    set(toolchain_test ${project_number}-${toolchain}-test)
+    set(directory_test ${CMAKE_SOURCE_DIR}/c/${project_number}/test)
+    set(directory_output_test ${CMAKE_BINARY_DIR}/${toolchain}/${project_number}test)
 
     ExternalProject_Add(${toolchain_project_number}
             PREFIX ${directory_output_project}
@@ -38,23 +38,23 @@ function(add_component project_number project_name toolchain)
         )
 
         if (TYPE_TEST)
-            ExternalProject_Add(${toolchain_tests}
-                    PREFIX ${directory_output_tests}
-                    SOURCE_DIR ${directory_tests}
-                    BINARY_DIR ${directory_output_tests}
+            ExternalProject_Add(${toolchain_test}
+                    PREFIX ${directory_output_test}
+                    SOURCE_DIR ${directory_test}
+                    BINARY_DIR ${directory_output_test}
                     CMAKE_GENERATOR "Unix Makefiles"
                     CMAKE_ARGS
                     -DCMAKE_TOOLCHAIN_FILE=${toolchain_file}
                     -DCMAKE_MODULE_PATH=${CMAKE_SOURCE_DIR}/cmake
                     -DCMAKE_C_FLAGS=-fno-omit-frame-pointer
-                    -B ${directory_output_tests}
+                    -B ${directory_output_test}
                     BUILD_COMMAND make
                     BUILD_ALWAYS ON
                     INSTALL_COMMAND ""
             )
 
             add_custom_target(test_${project_number}
-                    DEPENDS ${toolchain_tests}
+                    DEPENDS ${toolchain_test}
             )
 
             add_test(
@@ -63,7 +63,7 @@ function(add_component project_number project_name toolchain)
                     -machine virt
                     -nographic
                     -serial mon:stdio
-                    -kernel ${directory_output_tests}/${project_name}_test_kernel.elf
+                    -kernel ${directory_output_test}/${project_name}_test_kernel.elf
             )
 
             set_tests_properties(${project_number}_integration PROPERTIES

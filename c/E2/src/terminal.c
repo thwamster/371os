@@ -1,8 +1,10 @@
 #include "terminal.h"
-#include "library.h"
+#include "allocator.h"
+#include "exception.h"
 #include "literals.h"
 #include "serial.h"
-#include "system.h"
+#include "snake.h"
+#include "string.h"
 #include "timer.h"
 
 void terminal() {
@@ -14,6 +16,13 @@ void terminal() {
 	read_line(buffer);
 
 	while (!parse_time(buffer)) {
+		if (string_compare(buffer, COMMAND_EXIT) == 0) { exit(0); }
+
+		if (string_compare(buffer, "") == 0) {
+			set_time(0, 0, 0);
+			break;
+		}
+
 		format_reset();
 		print(MESSAGE_PREFIX);
 		print(MESSAGE_TIME_ERROR);
@@ -60,6 +69,7 @@ void execute(const char * input) {
 			print_line("");
 			break;
 		case EXCEPTION: throw_exception(); break;
+		case GAME: snake_run(); break;
 		default:
 			print(MESSAGE_PREFIX);
 			print("\'");
@@ -125,6 +135,7 @@ uint8_t parse_command(const char * input) {
 	if (string_compare(input, COMMAND_CLEAR) == 0) { return CLEAR; }
 	if (string_compare(input, COMMAND_TIME) == 0) { return TIME; }
 	if (string_compare(input, COMMAND_EXCEPTION) == 0) { return EXCEPTION; }
+	if (string_compare(input, COMMAND_SNAKE) == 0) { return GAME; }
 
 	return UNKNOWN;
 }

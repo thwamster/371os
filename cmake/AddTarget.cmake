@@ -11,12 +11,16 @@ function(add_target type)
     elseif (${type} MATCHES "riscv64-toolchain")
         set(executable_name ${PROJECT_NAME}_kernel.elf)
         set(base_executable_name ${PROJECT_NAME}_base_kernel.elf)
+        set(directory_include ${CMAKE_CURRENT_SOURCE_DIR}/include)
+        set(directory_linker ${CMAKE_CURRENT_SOURCE_DIR})
         set(directory_src ${CMAKE_CURRENT_SOURCE_DIR}/src)
         set(directory_scripts ${CMAKE_SOURCE_DIR}/../../py)
 
         if (TYPE_TEST)
             set(executable_name ${PROJECT_NAME}_test_kernel.elf)
             set(base_executable_name ${PROJECT_NAME}_base_test_kernel.elf)
+            set(directory_include ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../include)
+            set(directory_linker ${CMAKE_CURRENT_SOURCE_DIR}/..)
             set(directory_src ${CMAKE_CURRENT_SOURCE_DIR}/../src)
             set(directory_scripts ${CMAKE_SOURCE_DIR}/../../../py)
         endif ()
@@ -32,19 +36,29 @@ function(add_target type)
 
         if (TYPE_TEST)
             list(FILTER SOURCES EXCLUDE REGEX ".*main\\.c$")
-            list(APPEND SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/main.c)
+
+            file(GLOB TEST_SOURCES
+                    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
+                    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h
+                    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.S
+            )
+
+            list(APPEND SOURCES ${TEST_SOURCES})
         endif ()
 
         add_executable(${base_executable_name} ${SOURCES})
 
+        target_include_directories(${base_executable_name} PUBLIC ${directory_include})
+
         target_compile_options(${base_executable_name} PRIVATE
                 -g -Wall -Wextra -mcmodel=medany -ffreestanding -fno-omit-frame-pointer
         )
+
         target_link_options(${base_executable_name} PRIVATE
-                -nostdlib -T ${directory_src}/linker.ld
+                -nostdlib -T ${directory_linker}/linker.ld
         )
         set_target_properties(${base_executable_name} PROPERTIES
-                LINK_DEPENDS ${directory_src}/linker.ld
+                LINK_DEPENDS ${directory_linker}/linker.ld
         )
 
         set(symbol_c ${CMAKE_CURRENT_BINARY_DIR}/symbol_table.c)
@@ -57,14 +71,16 @@ function(add_target type)
 
         add_executable(${executable_name} ${SOURCES} ${symbol_c})
 
+        target_include_directories(${executable_name} PUBLIC ${directory_include})
+
         target_compile_options(${executable_name} PRIVATE
                 -g -Wall -Wextra -mcmodel=medany -ffreestanding -fno-omit-frame-pointer
         )
         target_link_options(${executable_name} PRIVATE
-                -nostdlib -T ${directory_src}/linker.ld
+                -nostdlib -T ${directory_linker}/linker.ld
         )
         set_target_properties(${executable_name} PROPERTIES
-                LINK_DEPENDS ${directory_src}/linker.ld
+                LINK_DEPENDS ${directory_linker}/linker.ld
         )
     endif ()
 endfunction()

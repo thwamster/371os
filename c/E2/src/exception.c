@@ -1,8 +1,9 @@
 #include "exception.h"
+#include "layout.h"
 #include "literals.h"
+#include "random.h"
 #include "serial.h"
 #include "timer.h"
-#include "layout.h"
 
 __attribute__((weak)) const struct Symbol symbol_table[1] = {{0, "unknown", "unknown", 0}};
 __attribute__((weak)) const size_t symbol_count = 0;
@@ -46,8 +47,14 @@ void handle_interrupt_external() {
 	const uint32_t claim = *PLIC_CLAIM;
 
 	while ((*UART_IIR & 0x1) == 0) {
-		uart_byte = (uint8_t) *UART;
-		uart_byte_ready = 1;
+		const size_t next = (inbox_first + 1) % INBOX_SIZE;
+
+		if (next != inbox_last) {
+			inbox[inbox_first] = (char) *UART;
+			inbox_first = next;
+		}
+
+		if (!random_seed) { random_initialize(); }
 	}
 
 	*PLIC_CLAIM = claim;
@@ -154,7 +161,7 @@ void print_symbol(const struct Symbol * symbol) {
 		print(" (");
 		print(symbol->file);
 		print(":");
-		print_num(symbol->line, 10);
+		print_num(symbol->line);
 		print_line(")");
 	}
 }

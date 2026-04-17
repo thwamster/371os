@@ -153,13 +153,13 @@ void print_num_ext(const int64_t number, const uint8_t base, const bool prefix, 
 	print(string);
 }
 
-void format(const uint8_t code) {
+void format_style(const uint8_t code) {
 	print("\e[");
 	print_num(code, 10);
 	print("m");
 }
 
-void format_reset() { format(RESET); }
+void format_reset() { format_style(RESET); }
 
 void format_rgb(const uint8_t code, const uint8_t red, const uint8_t green, const uint8_t blue) {
 	print("\e[");

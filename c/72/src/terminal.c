@@ -12,10 +12,10 @@ void terminal() {
 		format_reset();
 
 		print_reset("[");
-		format(FAINT);
+		format_style(FAINT);
 		print_reset(PROMPT_USER);
 		print_reset(".");
-		format(FAINT);
+		format_style(FAINT);
 		print_reset(PROMPT_SYSTEM);
 		print_reset("] ~> ");
 
