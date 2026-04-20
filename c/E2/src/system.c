@@ -1,7 +1,7 @@
 #include "system.h"
 #include "allocator.h"
-#include "paging.h"
 #include "exception.h"
+#include "paging.h"
 
 void initialize_system() {
 	frame_initialize();

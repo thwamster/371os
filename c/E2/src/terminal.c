@@ -1,9 +1,9 @@
 #include "terminal.h"
 #include "allocator.h"
 #include "exception.h"
+#include "game.h"
 #include "literals.h"
 #include "serial.h"
-#include "snake.h"
 #include "string.h"
 #include "timer.h"
 
@@ -69,7 +69,7 @@ void execute(const char * input) {
 			print_line("");
 			break;
 		case EXCEPTION: throw_exception(); break;
-		case GAME: snake_run(); break;
+		case GAME: game_run(); break;
 		default:
 			print(MESSAGE_PREFIX);
 			print("\'");

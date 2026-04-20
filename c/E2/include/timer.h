@@ -22,4 +22,5 @@ bool parse_time(const char * s);
 bool set_time(uint8_t hours, uint8_t minutes, uint8_t seconds);
 void update_time(void);
 void print_time(void);
-void wait(uint64_t milliseconds);
+void wait(uint16_t delay);
+void wait_ext(uint16_t * mark, uint16_t * delay);

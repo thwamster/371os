@@ -57,18 +57,19 @@ void print_time() {
 	print_num_ext(clock.seconds, 10, false, 2);
 }
 
-void wait(uint64_t milliseconds) {
-	uint16_t prev = clock.milliseconds;
+void wait(uint16_t delay) {
+	uint16_t mark = clock.milliseconds;
+	while (delay > 0) { wait_ext(&mark, &delay); }
+}
 
-	while (milliseconds > 0) {
-		__asm__ volatile("wfi");
+void wait_ext(uint16_t * mark, uint16_t * delay) {
+	__asm__ volatile("wfi");
 
-		uint16_t now = clock.milliseconds;
+	uint16_t now = clock.milliseconds;
 
-		if (now != prev) {
-			uint16_t delta = now >= prev ? now - prev : MAX_MILLISECOND - prev + now;
-			milliseconds = milliseconds > delta ? milliseconds - delta : 0;
-			prev = now;
-		}
+	if (now != *mark) {
+		uint16_t delta = now >= *mark ? now - *mark : MAX_MILLISECOND - *mark + now;
+		*delay = *delay > delta ? *delay - delta : 0;
+		*mark = now;
 	}
 }
