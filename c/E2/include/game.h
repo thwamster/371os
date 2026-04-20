@@ -23,10 +23,10 @@ enum Board {
 	SNAKE_SE = 11
 };
 enum Action { GAME_NONE = 0, GAME_MOVEMENT = 1, GAME_PAUSE = 2, GAME_RESTART = 3, GAME_EXIT = 4 };
-enum Outcome { LOSS = 0, NONE = 1, WIN = 2 };
+enum Status { AWAITING = 0, RUNNING = 1, PAUSED = 2, OVER_WIN = 3, OVER_LOSS = 4, OVER_EXITING = 5 };
 
-static const struct Position SET_SNAKE[] = {{0, 4}, {1, 4}, {2, 4}};
-static const struct Position SET_APPLE[] = {{.x = 8, .y = 4}};
+static const struct Position SET_SNAKE[] = {{(WIDTH - 10) / 4, HEIGHT / 2}, {(WIDTH - 10) / 4 + 1, HEIGHT / 2}, {(WIDTH - 10) / 4 + 2, HEIGHT / 2}};
+static const struct Position SET_APPLE[] = {{WIDTH - WIDTH / 4, HEIGHT / 2}};
 static const struct Position DIRECTIONS[] = {{0, -1}, {-1, 0}, {0, 1}, {1, 0}};
 static const uint16_t DELAY_PAUSE = 300;
 static const uint16_t DELAY_MAXIMUM = 200;
@@ -44,21 +44,19 @@ extern enum Direction snake_momentum;
 extern size_t snake_head;
 extern size_t snake_tail;
 extern uint8_t game_board[HEIGHT][WIDTH];
-extern bool game_started;
-extern bool game_paused;
+extern enum Status game_status;
 
 void game_initialize(void);
 void game_initialize_board();
-void game_run(void);
+void game_start();
+bool game_run(void);
+bool game_read(void);
 enum Action action(void);
 enum Action action_movement(char character);
-enum Outcome move(void);
+void action_pause(void);
+void action_restart(void);
+void action_exit(void);
+enum Status move(void);
 void move_head(struct Position head, struct Position new_head);
 void move_tail(struct Position tail);
 void move_apple(void);
-void draw(void);
-void draw_square(size_t x, size_t y);
-void draw_square_wall(size_t x, size_t y);
-void draw_square_board(size_t x, size_t y);
-void window_open(void);
-void window_close(struct Position original_size);

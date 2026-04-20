@@ -69,7 +69,7 @@ void execute(const char * input) {
 			print_line("");
 			break;
 		case EXCEPTION: throw_exception(); break;
-		case GAME: game_run(); break;
+		case GAME: game_start(); break;
 		default:
 			print(MESSAGE_PREFIX);
 			print("\'");

@@ -1,5 +1,8 @@
 #pragma once
 
+#include <stddef.h>
+#include <stdint.h>
+
 struct Position {
 	int32_t x;
 	int32_t y;
